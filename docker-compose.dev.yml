@@ -1,0 +1,61 @@
+version: '3'
+services:
+
+  #php service
+  backend:
+    build:
+      context: ./back
+      dockerfile: Dockerfile.dev
+    container_name: web_restaurant
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./back:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_NAME=restaurant
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
+    networks:
+      - restaurant-network
+
+  db:
+    image: postgres:12.8-alpine
+    container_name: db_restaurant
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=restaurant
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - pgdata-restaurant-dev:/var/lib/postgresql/data
+    networks:
+      - restaurant-network
+
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3000:3000
+    container_name: front_restaurant
+    volumes:
+       - ./front:/app
+       - ./front/node_modules:/app/node_modules
+    networks:
+      - restaurant-network
+
+#Docker Networks
+networks:
+  restaurant-network:
+    driver: bridge
+
+#Volumes
+volumes:
+  pgdata-restaurant-dev:
+    driver: local

@@ -1,0 +1,76 @@
+version: '3'
+services:
+
+  #php service
+  backend:
+    build:
+      context: ./back
+      dockerfile: Dockerfile.prod
+    container_name: web_restaurant
+    command: gunicorn back.wsgi:application -t 3600 -w 2 -b :8000 --reload
+    volumes:
+      - ./back:/code
+    environment:
+      - POSTGRES_NAME=restaurant
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
+    networks:
+      - restaurant-network
+
+  nginx:
+    build:
+      context: ./back/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ./back/static:/code/static
+      - ./back/media_root:/code/media_root
+      - ./back/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
+    networks:
+      - restaurant-network
+
+
+  db:
+    image: postgres:12.8-alpine
+    container_name: db_restaurant
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=restaurant
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - pgdata-restaurant-prod:/var/lib/postgresql/data
+    networks:
+      - restaurant-network
+
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile.prod
+    ports:
+      - 80:80
+    container_name: front_restaurant
+    volumes:
+       - ./front:/app
+       - ./front/node_modules:/app/node_modules
+    networks:
+      - restaurant-network
+
+#Docker Networks
+networks:
+  restaurant-network:
+    driver: bridge
+
+#Volumes
+volumes:
+  pgdata-restaurant-prod:
+    driver: local
