@@ -1,9 +1,9 @@
 import React from "react";
 
-export function HomeAdmin() {
+export function TablesAdmin() {
   return (
     <div>
-      <h1>HomeAdmin</h1>
+      <h1>TablesAdmin</h1>
     </div>
   );
 }

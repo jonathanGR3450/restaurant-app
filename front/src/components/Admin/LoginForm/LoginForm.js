@@ -1,20 +1,25 @@
 import React from "react";
 import { Button, Form } from "semantic-ui-react";
+import { toast } from "react-toastify";
+import { useAuth } from "../../../hooks";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { loginApi } from "../../../api/user";
 import "./LoginForm.scss";
 
 export function LoginForm() {
+  const { login } = useAuth();
   const formik = useFormik({
     initialValues: initialValues(),
     validationSchema: Yup.object(validationSchema()),
     onSubmit: async (formValue) => {
       try {
         const response = await loginApi(formValue);
-        console.log(response);
+        const { access } = response;
+        login(access);
       } catch (error) {
-        console.log(error);
+        console.log(error.message);
+        toast.error(error.message);
       }
     },
   });

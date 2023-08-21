@@ -13,6 +13,12 @@ class UserApiViewSet(ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
+    def get_permissions(self):
+        permission_classes = []
+        if self.action == "list":
+            permission_classes = [IsAuthenticated, IsAdminUser]
+        return [permission() for permission in permission_classes]
+
     def create(self, request, *args, **kwargs):
         request.data["password"] = make_password(request.data["password"])
         return super().create(request, *args, **kwargs)
