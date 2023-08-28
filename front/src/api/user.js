@@ -53,3 +53,23 @@ export async function getUsersApi(token) {
     throw error;
   }
 }
+
+export async function addUserApi(token, user) {
+  try {
+    const url = `${BASE_API}/api/users/users/`;
+    const params = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    };
+    const response = await fetch(url, params);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.log("error api");
+    throw error;
+  }
+}
