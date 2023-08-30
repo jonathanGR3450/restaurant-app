@@ -7,14 +7,20 @@ import * as Yup from "yup";
 import "./UserForm.scss";
 
 export function UserForm(props) {
-  const { onClose, onRefetch } = props;
-  const { addUser } = useUser();
+  const { onClose, onRefetch, user } = props;
+  const { addUser, updateUser } = useUser();
   const formik = useFormik({
-    initialValues: initialValues(),
-    validationSchema: Yup.object(validationSchema()),
+    initialValues: initialValues(user),
+    validationSchema: Yup.object(
+      user.create ? validationSchema() : validationSchemaUpdate()
+    ),
     onSubmit: async (formValue) => {
       try {
-        await addUser(formValue);
+        if (user.create) {
+          await addUser(formValue);
+        } else {
+          await updateUser(formValue);
+        }
         onRefetch();
         onClose();
       } catch (error) {
@@ -85,21 +91,18 @@ export function UserForm(props) {
         />{" "}
         Usuario Staff
       </div>
-      <Button primary fluid type="submit" content="Save" />
+      <Button
+        primary
+        fluid
+        type="submit"
+        content={user.create ? "Save" : "Update"}
+      />
     </Form>
   );
 }
 
-function initialValues() {
-  return {
-    username: "",
-    email: "",
-    first_name: "",
-    last_name: "",
-    password: "",
-    is_active: true,
-    is_staff: false,
-  };
+function initialValues(user) {
+  return user;
 }
 
 function validationSchema() {
@@ -109,6 +112,18 @@ function validationSchema() {
     first_name: Yup.string(),
     last_name: Yup.string(),
     password: Yup.string().required(true),
+    is_active: Yup.bool().required(true),
+    is_staff: Yup.bool().required(true),
+  };
+}
+
+function validationSchemaUpdate() {
+  return {
+    username: Yup.string().required(true),
+    email: Yup.string().email(true).required(true),
+    first_name: Yup.string(),
+    last_name: Yup.string(),
+    password: Yup.string(),
     is_active: Yup.bool().required(true),
     is_staff: Yup.bool().required(true),
   };

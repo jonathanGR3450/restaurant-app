@@ -69,7 +69,45 @@ export async function addUserApi(token, user) {
     const result = await response.json();
     return result;
   } catch (error) {
-    console.log("error api");
+    throw error;
+  }
+}
+
+export async function updateUserApi(token, user) {
+  try {
+    const url = `${BASE_API}/api/users/users/${user.id}/`;
+    const params = {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    };
+    const response = await fetch(url, params);
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result);
+    }
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteUserApi(token, user) {
+  try {
+    const url = `${BASE_API}/api/users/users/${user.id}/`;
+    const params = {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const response = await fetch(url, params);
+    const result = await response.json();
+    return result;
+  } catch (error) {
     throw error;
   }
 }
