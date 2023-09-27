@@ -18,7 +18,10 @@ from django.urls import path, re_path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from django.conf.urls.static import static
+from django.conf import settings
 import users.urls as user_url
+import categories.urls as categories_url
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -45,4 +48,5 @@ urlpatterns = [
         "swagger<format>/", schema_view.without_ui(cache_timeout=0), name="schema-json"
     ),
     path("api/users/", include(user_url)),
-]
+    path("api/categories/", include(categories_url)),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

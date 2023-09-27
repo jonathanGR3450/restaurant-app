@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "users",
+    "categories",
 ]
 
 MIDDLEWARE = [
@@ -131,6 +132,30 @@ REST_FRAMEWORK = {
     )
 }
 
+# SWAGGER SETTINGS
+SWAGGER_SETTINGS = {
+    "SHOW_REQUEST_HEADERS": True,
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer token (e.g., 'Bearer your_token_here')",
+        }
+    },
+    "USE_SESSION_AUTH": False,
+    "JSON_EDITOR": True,
+    "SUPPORTED_SUBMIT_METHODS": ["get", "post", "put", "delete", "patch"],
+    "HEADERS": [  # Agrega esta configuración
+        {
+            "name": "Authorization",
+            "type": "string",
+            "description": "Bearer token (e.g., 'Bearer your_token_here')",
+            "required": False,  # Si el token es opcional, de lo contrario, déjalo como True
+            "default": "Bearer your_token_here",  # Puedes proporcionar un valor predeterminado si es necesario
+        }
+    ],
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -150,6 +175,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = "/static/"
+MEDIA_URL = "/uploads/"
+
+STATIC_ROOT = "/static/"
+# STATIC_ROOT = '/code/static/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
