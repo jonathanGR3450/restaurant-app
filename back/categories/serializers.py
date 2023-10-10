@@ -4,7 +4,7 @@ from .models import Category
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(required=True)
+    image = serializers.ImageField(required=False)
 
     class Meta:
         model = Category
