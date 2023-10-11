@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 import users.urls as user_url
 import categories.urls as categories_url
+import products.urls as products_url
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -49,4 +50,5 @@ urlpatterns = [
     ),
     path("api/users/", include(user_url)),
     path("api/categories/", include(categories_url)),
+    path("api/products/", include(products_url)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
