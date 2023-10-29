@@ -43,8 +43,6 @@ export function CategoryForm(props) {
           const response = await saveCategory(formValue);
         } else {
           const response = await updateCategory(formValue);
-          console.log("update");
-          console.log(formValue);
         }
         onRefetch();
         onClose();
