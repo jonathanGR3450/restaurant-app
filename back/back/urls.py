@@ -24,6 +24,7 @@ import users.urls as user_url
 import categories.urls as categories_url
 import products.urls as products_url
 import tables.urls as tables_url
+import orders.urls as orders_urls
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -53,4 +54,5 @@ urlpatterns = [
     path("api/categories/", include(categories_url)),
     path("api/products/", include(products_url)),
     path("api/tables/", include(tables_url)),
+    path("api/orders/", include(orders_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
